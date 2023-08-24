@@ -8,6 +8,8 @@
 #include <variant>
 #include <vector>
 
+using namespace std::string_view_literals;
+
 const double VALUE_IF_EMPTY_CELL = 0.0;
 
 // Позиция ячейки. Индексация с нуля.
@@ -53,13 +55,34 @@ public:
         Div0,  // в результате вычисления возникло деление на ноль
     };
 
-    FormulaError(Category category);
+    FormulaError(Category category) : category_(category)
+    {
+    }
 
-    Category GetCategory() const;
+    Category GetCategory() const {
+        return category_;
+    }
 
-    bool operator==(FormulaError rhs) const;
+    bool operator==(FormulaError rhs) const {
+        return category_ == rhs.category_;
+    }
 
-    std::string_view ToString() const;
+    std::string_view ToString() const {
+        switch (category_)
+        {
+        case Category::Ref:
+            return "#REF!"sv;
+        case Category::Value:
+            return "#VALUE!"sv;
+        case Category::Div0:
+            return "#DIV/0!"sv;
+        default:
+            break;
+        }
+
+        return "#VALUE!"sv;
+    }
+
 
 private:
     Category category_;
@@ -87,7 +110,6 @@ public:
     using std::runtime_error::runtime_error;
 };
 
-// нельзя менять методы интерфейса CellInterface
 class CellInterface {
 public:
     // Либо текст ячейки, либо значение формулы, либо сообщение об ошибке из
@@ -114,7 +136,6 @@ public:
     // начать текст со знака "=", но чтобы он не интерпретировался как формула.
     virtual void Set(std::string text) = 0;
 
-    // новый
     // Возвращает список ячеек, которые непосредственно задействованы в данной
     // формуле. Список отсортирован по возрастанию и не содержит повторяющихся
     // ячеек. В случае текстовой ячейки список пуст.
@@ -124,8 +145,6 @@ public:
 inline constexpr char FORMULA_SIGN = '=';
 inline constexpr char ESCAPE_SIGN = '\'';
 
-// нельзя менять методы интерфейса SheetInterface
-// Интерфейс таблицы
 class SheetInterface {
 public:
     virtual ~SheetInterface() = default;

@@ -1,6 +1,7 @@
 #include "FormulaAST.h"
 
 #include "FormulaBaseListener.h"
+#include "FormulaListener.h"
 #include "FormulaLexer.h"
 #include "FormulaParser.h"
 
@@ -9,6 +10,8 @@
 #include <memory>
 #include <optional>
 #include <sstream>
+
+using namespace std::literals;
 
 namespace ASTImpl {
 
@@ -72,7 +75,7 @@ public:
     virtual ~Expr() = default;
     virtual void Print(std::ostream& out) const = 0;
     virtual void DoPrintFormula(std::ostream& out, ExprPrecedence precedence) const = 0;
-    virtual double Evaluate(std::function<const CellInterface*(std::string)> cell_getter) const = 0;
+    virtual double Evaluate(std::function<const CellInterface*(const Position*)> cell_getter) const = 0;
 
     // higher is tighter
     virtual ExprPrecedence GetPrecedence() const = 0;
@@ -142,30 +145,33 @@ public:
         }
     }
 
-// Реализуйте метод Evaluate() для бинарных операций.
-// При делении на 0 выбрасывайте ошибку вычисления FormulaError
-    double Evaluate(std::function<const CellInterface*(std::string)> cell_getter) const override {
+    double Evaluate(std::function<const CellInterface*(const Position*)> cell_getter) const override {
         double lhs = lhs_->Evaluate(cell_getter);
         double rhs = rhs_->Evaluate(cell_getter);
 
         switch (type_)
         {
         case Type::Add:
-            return lhs + rhs;
-            break;
-        case Type::Subtract:
-            return lhs - rhs;
-            break;
-        case Type::Multiply:
-            return lhs * rhs;
-            break;
-        case Type::Divide:
-            if (std::abs(rhs - 0) <= 1e-6) {
+            if (!std::isfinite(lhs + rhs)) {
                 throw FormulaError(FormulaError::Category::Div0);
             }
-
+            return lhs + rhs;
+        case Type::Subtract:
+            if (!std::isfinite(lhs - rhs)) {
+                throw FormulaError(FormulaError::Category::Div0);
+            }
+            return lhs - rhs;
+        case Type::Multiply:
+            if (!std::isfinite(lhs * rhs)) {
+                throw FormulaError(FormulaError::Category::Div0);
+            }
+            return lhs * rhs;
+        case Type::Divide:
+            if (std::abs(rhs - 0) <= 1e-6) {
+                auto category = FormulaError::Category::Div0;
+                throw FormulaError(category);
+            }
             return lhs / rhs;
-            break;
         default:
             break;
         }
@@ -207,18 +213,77 @@ public:
         return EP_UNARY;
     }
 
-// Реализуйте метод Evaluate() для унарных операций.
-    double Evaluate(std::function<const CellInterface*(std::string)> cell_getter) const override {
+    double Evaluate(std::function<const CellInterface*(const Position*)> cell_getter) const override {
+        auto res = operand_->Evaluate(cell_getter);
+        
         if (type_ == Type::UnaryMinus) {
-            return -operand_->Evaluate(cell_getter);
+            return -res;
         }
 
-        return operand_->Evaluate(cell_getter);
+        return res;
     }
 
 private:
     Type type_;
     std::unique_ptr<Expr> operand_;
+};
+
+class CellExpr final : public Expr {
+public:
+    explicit CellExpr(const Position* cell)
+        : cell_(cell) {
+    }
+
+    void Print(std::ostream& out) const override {
+        if (!cell_->IsValid()) {
+            out << FormulaError::Category::Ref;
+        } else {
+            out << cell_->ToString();
+        }
+    }
+
+    void DoPrintFormula(std::ostream& out, ExprPrecedence /* precedence */) const override {
+        Print(out);
+    }
+
+    ExprPrecedence GetPrecedence() const override {
+        return EP_ATOM;
+    }
+
+    // Для ячеек метод возвращает вычисленное значение ячейки
+    double Evaluate(std::function<const CellInterface*(const Position*)> cell_getter) const override {
+        // взять ячейку из таблицы
+        const CellInterface* cell = cell_getter(cell_);
+
+        if (!cell) {
+            return VALUE_IF_EMPTY_CELL;
+        }
+
+        const CellInterface::Value& value = cell->GetValue();
+        // в ней может быть CellInterface::Value = std::variant<std::string, double, FormulaError>
+        if (std::holds_alternative<double>(value)) {
+            return std::get<double>(value);
+        } else if (std::holds_alternative<std::string>(value)) {
+            // строку нужно попробовать превратить в число
+            try {
+                std::string as_string = std::get<std::string>(value);
+                std::size_t sz = 0;
+                double as_double = std::stod(as_string, &sz);
+                if (sz == as_string.size()) {
+                    return as_double;
+                }
+
+                throw std::runtime_error("cannot convert to double: "s + as_string);
+            } catch (const std::exception& ex) {
+                auto category = FormulaError::Category::Value;
+                throw FormulaError(category);
+            }
+        }
+
+        throw std::get<FormulaError>(value);
+    }
+private:
+    const Position* cell_;
 };
 
 class NumberExpr final : public Expr {
@@ -240,58 +305,12 @@ public:
     }
 
     // Для чисел метод возвращает значение числа.
-    double Evaluate(std::function<const CellInterface*(std::string)> /* cell_getter */) const override {
+    double Evaluate(std::function<const CellInterface*(const Position*)> /* cell_getter */) const override {
         return value_;
     }
 
 private:
     double value_;
-};
-
-class CellExpr final : public Expr {
-public:
-    explicit CellExpr(std::string index)
-        : value_(index) {
-    }
-
-    void Print(std::ostream& out) const override {
-        out << value_;
-    }
-
-    void DoPrintFormula(std::ostream& out, ExprPrecedence /* precedence */) const override {
-        out << value_;
-    }
-
-    ExprPrecedence GetPrecedence() const override {
-        return EP_ATOM;
-    }
-
-    // Для ячеек метод возвращает вычисленное значение ячейки
-    double Evaluate(std::function<const CellInterface*(std::string)> cell_getter) const override {
-        // взять ячейку из таблицы
-        const CellInterface* cell = cell_getter(value_);
-
-        if (!cell) {
-            return VALUE_IF_EMPTY_CELL; // 0.0
-        }
-
-        const CellInterface::Value& value = cell->GetValue();
-        // в ней может быть CellInterface::Value = std::variant<std::string, double, FormulaError>
-        if (std::holds_alternative<double>(value)) {
-            return std::get<double>(value);
-        } else if (std::holds_alternative<std::string>(value)) {
-            // но строку нужно попробовать превратить в число
-            try {
-                return std::stod(std::get<std::string>(value));
-            } catch (const std::exception& ex) {
-                throw FormulaError(FormulaError::Category::Value);
-            }
-        }
-
-        throw std::get<FormulaError>(value);
-    }
-private:
-    std::string value_;
 };
 
 class ParseASTListener final : public FormulaBaseListener {
@@ -302,6 +321,10 @@ public:
         args_.clear();
 
         return root;
+    }
+
+    std::forward_list<Position> MoveCells() {
+        return std::move(cells_);
     }
 
 public:
@@ -335,6 +358,18 @@ public:
         args_.push_back(std::move(node));
     }
 
+    void exitCell(FormulaParser::CellContext* ctx) override {
+        auto value_str = ctx->CELL()->getSymbol()->getText();
+        auto value = Position::FromString(value_str);
+        if (!value.IsValid()) {
+            throw FormulaException("Invalid position: " + value_str);
+        }
+
+        cells_.push_front(value);
+        auto node = std::make_unique<CellExpr>(&cells_.front());
+        args_.push_back(std::move(node));
+    }
+
     void exitBinaryOp(FormulaParser::BinaryOpContext* ctx) override {
         assert(args_.size() >= 2);
 
@@ -365,6 +400,7 @@ public:
 
 private:
     std::vector<std::unique_ptr<Expr>> args_;
+    std::forward_list<Position> cells_;
 };
 
 class BailErrorListener : public antlr4::BaseErrorListener {
@@ -401,7 +437,7 @@ FormulaAST ParseFormulaAST(std::istream& in) {
     ASTImpl::ParseASTListener listener;
     tree::ParseTreeWalker::DEFAULT.walk(&listener, tree);
 
-    return FormulaAST(listener.MoveRoot());
+    return FormulaAST(listener.MoveRoot(), listener.MoveCells());
 }
 
 FormulaAST ParseFormulaAST(const std::string& in_str) {
@@ -413,6 +449,12 @@ FormulaAST ParseFormulaAST(const std::string& in_str) {
     }
 }
 
+void FormulaAST::PrintCells(std::ostream& out) const {
+    for (auto cell : cells_) {
+        out << cell.ToString() << ' ';
+    }
+}
+
 void FormulaAST::Print(std::ostream& out) const {
     root_expr_->Print(out);
 }
@@ -421,17 +463,23 @@ void FormulaAST::PrintFormula(std::ostream& out) const {
     root_expr_->PrintFormula(out, ASTImpl::EP_ATOM);
 }
 
-double FormulaAST::Execute(std::function<const CellInterface*(std::string)> cell_getter) const {
+double FormulaAST::Execute(std::function<const CellInterface*(const Position*)> cell_getter) const {
     return root_expr_->Evaluate(cell_getter);
 }
 
-const std::forward_list<Position>& FormulaAST::GetReferencedCells() const {
-    return referenced_cells_;
+FormulaAST::FormulaAST(std::unique_ptr<ASTImpl::Expr> root_expr, std::forward_list<Position> cells)
+    : root_expr_(std::move(root_expr))
+    , cells_(std::move(cells))
+{
+    cells_.sort();  // to avoid sorting in GetReferencedCells
 }
 
+const std::forward_list<Position>& FormulaAST::GetCells() const {
+    return cells_;
+}
 
-FormulaAST::FormulaAST(std::unique_ptr<ASTImpl::Expr> root_expr)
-    : root_expr_(std::move(root_expr)) {
+std::forward_list<Position> FormulaAST::GetCells() {
+    return cells_;
 }
 
 FormulaAST::~FormulaAST() = default;

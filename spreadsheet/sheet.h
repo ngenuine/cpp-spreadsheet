@@ -22,4 +22,6 @@ public:
     void PrintTexts(std::ostream& output) const override;
 private:
     std::vector<std::vector<std::unique_ptr<CellInterface>>> data_;
+    bool IsEmptyRow(const std::vector<std::unique_ptr<CellInterface>>& row) const;
+    void PrintSheet(std::ostream& output, std::function<CellInterface::Value(const std::unique_ptr<CellInterface>&)> getter) const;
 };

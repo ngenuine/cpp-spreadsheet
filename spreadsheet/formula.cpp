@@ -10,7 +10,7 @@
 using namespace std::literals;
 
 std::ostream& operator<<(std::ostream& output, FormulaError fe) {
-    return output << "#DIV/0!";
+    return output << fe.ToString();
 }
 
 namespace {
@@ -33,18 +33,17 @@ Formula::Formula(std::string expression)
 }
 
 FormulaInterface::Value Formula::Evaluate(const SheetInterface& sheet) const {
-    // Подсказка: Чтобы передать параметр — скажем, ссылку на таблицу внутрь метода, можно использовать объекты-функции.
-    // Например, функцию, которая по индексу ячейки возвращает её значение в конкретной таблице.
     try {
-        auto cell_getter = [&sheet](std::string cell_index) {
+        auto cell_getter = [&sheet](const Position* pos) { // может вернуть nullptr
             try {
-                return sheet.GetCell(Position::FromString(cell_index));
+                return sheet.GetCell(*pos);
             } catch (const InvalidPositionException& ex) {
                 // если брошено исключение, то это из-за того, что
                 // IsValid() сказал, что ячейка некорректная,
                 // в этом месте некорректоной она может быть по причине
                 // выхода за пределы листа
-                throw FormulaError(FormulaError::Category::Ref);
+                auto category = FormulaError::Category::Ref;
+                throw FormulaError(category);
             }
         };
         return ast_.Execute(cell_getter);
@@ -61,7 +60,7 @@ std::string Formula::GetExpression() const {
 }
 
 std::vector<Position> Formula::GetReferencedCells() const {
-    const std::forward_list<Position>& referenced_cells = ast_.GetReferencedCells();
+    const std::forward_list<Position>& referenced_cells = ast_.GetCells();
 
     std::vector<Position> cells;
     for (const auto pos : referenced_cells) {
