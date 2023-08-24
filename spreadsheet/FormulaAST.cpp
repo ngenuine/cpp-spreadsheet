@@ -10,8 +10,6 @@
 #include <optional>
 #include <sstream>
 
-using namespace std::literals;
-
 namespace ASTImpl {
 
 enum ExprPrecedence {
@@ -163,7 +161,7 @@ public:
             break;
         case Type::Divide:
             if (std::abs(rhs - 0) <= 1e-6) {
-                throw FormulaError("DIV/0"s);
+                throw FormulaError("DIV/0");
             }
 
             return lhs / rhs;

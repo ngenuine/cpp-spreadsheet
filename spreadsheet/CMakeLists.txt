@@ -56,8 +56,3 @@ install(
 )
 
 set_directory_properties(PROPERTIES VS_STARTUP_PROJECT spreadsheet)
-
-# cmake .. -DCMAKE_BUILD_TYPE=Debug
-# cmake --build .
-
-# cmake ../src -DCMAKE_BUILD_TYPE=Debug && cmake --build .
