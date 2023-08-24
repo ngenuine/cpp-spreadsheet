@@ -22,12 +22,17 @@ public:
     FormulaAST& operator=(FormulaAST&&) = default;
     ~FormulaAST();
 
-    double Execute() const;
+    double Execute(std::function<const CellInterface*(std::string)> cell_getter) const;
+
+    const std::forward_list<Position>& GetReferencedCells() const;
+
     void Print(std::ostream& out) const;
     void PrintFormula(std::ostream& out) const;
-
 private:
     std::unique_ptr<ASTImpl::Expr> root_expr_;
+
+    // все встреченные индексы ячеек сохранятся в отдельный список при парсинге формулы в методе ParseFormulaAST
+    std::forward_list<Position> referenced_cells_;
 };
 
 FormulaAST ParseFormulaAST(std::istream& in);

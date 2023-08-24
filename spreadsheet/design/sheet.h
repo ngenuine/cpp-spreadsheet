@@ -20,10 +20,6 @@ public:
 
     void PrintValues(std::ostream& output) const override;
     void PrintTexts(std::ostream& output) const override;
-
-	// Можете дополнить ваш класс нужными полями и методами
-
 private:
-	// Можете дополнить ваш класс нужными полями и методами
     std::vector<std::vector<std::unique_ptr<CellInterface>>> data_;
 };

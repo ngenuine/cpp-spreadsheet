@@ -19,22 +19,24 @@ void Sheet::SetCell(Position pos, std::string text) {
         throw InvalidPositionException("invalid position: "s + out.str());
     }
 
-    if (text.size() > 0) {
-        // std::cout << text << pos.row << ' ' << pos.col << std::endl;
-        if (pos.row + 1 > static_cast<int>(data_.size())) {
-            data_.resize(pos.row + 1);
-        }
-
-        if (pos.col + 1 > static_cast<int>(data_.at(pos.row).size())) {
-            data_.at(pos.row).resize(pos.col + 1);
-        }
-
-        data_.at(pos.row).at(pos.col) = CreateCell(text);
+    if (pos.row + 1 > static_cast<int>(data_.size())) {
+        data_.resize(pos.row + 1);
     }
+
+    if (pos.col + 1 > static_cast<int>(data_.at(pos.row).size())) {
+        data_.at(pos.row).resize(pos.col + 1);
+    }
+
+    // Что будет, если до вызова метода Cell::Set() ячейка была пустой?
+    // Что будет, если она не была пустой, а содержала формулу с другими зависимостями и была встроена в граф? Как изменение в ней повлияет на другие ячейки?
+
+    data_.at(pos.row).at(pos.col) = CreateCell(text, this);
 }
 
 const CellInterface* Sheet::GetCell(Position pos) const {
     return GetCell(pos);
+
+    // тут надо из константного неконстантный вызвать, а не наоборот
 }
 
 CellInterface* Sheet::GetCell(Position pos) {
@@ -46,9 +48,11 @@ CellInterface* Sheet::GetCell(Position pos) {
 
     try {
         return data_.at(pos.row).at(pos.col).get();
-    } catch (const std::out_of_range& ex) { }
+    } catch (const std::out_of_range& ex) {
+        SetCell(pos, ""s); // если такой ячейки еще нет, то надо создать пустую, но инициализированную
+    }
 
-    return nullptr;
+    return data_.at(pos.row).at(pos.col).get();
 }
 
 void Sheet::ClearCell(Position pos) {
@@ -69,9 +73,8 @@ Size Sheet::GetPrintableSize() const {
     for (int row_counter = 0; row_counter < static_cast<int>(data_.size()); ++row_counter) {
         const auto& row = data_.at(row_counter);
         for (int col_counter = 0; col_counter < static_cast<int>(row.size()); ++col_counter) {
-            // std::cout << "row counter: " << row_counter << ' ' << "col counter: " << col_counter << std::endl;
+            
             const auto& cell = row.at(col_counter);
-            // std::cout << cell->GetText() << std::endl;
             if (cell) { // cell
                 if (size.rows < row_counter + 1) {
                     size.rows = row_counter + 1;
@@ -81,8 +84,6 @@ Size Sheet::GetPrintableSize() const {
                     size.cols = col_counter + 1;
                 }
             }
-
-            // std::cout << size.rows << ' ' << size.cols << std::endl;
         }
     }
 

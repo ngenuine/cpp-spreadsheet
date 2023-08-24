@@ -1,0 +1,184 @@
+<mxfile host="Electron" modified="2023-08-18T20:26:16.226Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.6.8 Chrome/114.0.5735.289 Electron/25.5.0 Safari/537.36" etag="MorHd_3y3-tF7C6RhiZy" version="21.6.8" type="device">
+  <diagram name="Page-1" id="SPiCIr0ZC_wj-tATxjPY">
+    <mxGraphModel dx="1364" dy="843" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="lTLusuyiNAkY52ba71Ii-4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="lTLusuyiNAkY52ba71Ii-1" target="lTLusuyiNAkY52ba71Ii-3" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-1" value="начало&lt;br&gt;&lt;br&gt;в unique_ptr&amp;lt;SheetInterface&amp;gt; sheet вставляется ячейка с неким содержимым, окторое может быть пустой или непустой строкой&lt;br&gt;&lt;br&gt;sheet-&amp;gt;SetCell(pos, text);" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="260" y="62" width="260" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-2" value="Создание новой ячейки" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=17;" parent="1" vertex="1">
+          <mxGeometry x="285" y="10" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="lTLusuyiNAkY52ba71Ii-3" target="lTLusuyiNAkY52ba71Ii-5" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-7" value="нет" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=17;" parent="lTLusuyiNAkY52ba71Ii-6" vertex="1" connectable="0">
+          <mxGeometry x="-0.1637" y="2" relative="1" as="geometry">
+            <mxPoint y="-2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="lTLusuyiNAkY52ba71Ii-3" target="lTLusuyiNAkY52ba71Ii-8" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-3" value="pos корректна?&lt;br&gt;(не отрицательные,&lt;br&gt;не выходящие&lt;br&gt;за пределы&lt;br&gt;листа координаты)" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="273.66999999999996" y="267" width="232.66" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="lTLusuyiNAkY52ba71Ii-5" target="lTLusuyiNAkY52ba71Ii-57" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="65" y="1012" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="65" y="1472" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-5" value="InvalidPositionException" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="299.5" width="170" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="lTLusuyiNAkY52ba71Ii-8" target="lTLusuyiNAkY52ba71Ii-10" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-8" value="создание ячейки в позиции pos c инициализацией в конструкторе ссылки на sheet" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="310" y="442" width="159.99" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-15" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="lTLusuyiNAkY52ba71Ii-10" target="lTLusuyiNAkY52ba71Ii-14" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-10" value="установка содержимого text" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="310.01" y="552" width="159.99" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-17" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="lTLusuyiNAkY52ba71Ii-14" target="lTLusuyiNAkY52ba71Ii-16" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-18" value="нет" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=17;" parent="lTLusuyiNAkY52ba71Ii-17" vertex="1" connectable="0">
+          <mxGeometry x="-0.0737" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-24" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="lTLusuyiNAkY52ba71Ii-14" target="lTLusuyiNAkY52ba71Ii-23" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-27" value="да" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=17;" parent="lTLusuyiNAkY52ba71Ii-24" vertex="1" connectable="0">
+          <mxGeometry x="-0.095" y="2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-14" value="text это формула?" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="315" y="622" width="150.01" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="lTLusuyiNAkY52ba71Ii-16" target="lTLusuyiNAkY52ba71Ii-19" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="1202" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="190" y="1287" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-16" value="установка текстовой ячейки" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="130.005" y="642" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-58" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="lTLusuyiNAkY52ba71Ii-19" target="lTLusuyiNAkY52ba71Ii-57" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-19" value="InvalidateCache(), потому что от ячейки могут зависеть другие ячейки, если где-то эта ячейка выступала операндом" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="95.01" y="1287" width="190" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="lTLusuyiNAkY52ba71Ii-23" target="lTLusuyiNAkY52ba71Ii-25" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-23" value="парсим формулу во временный объект&lt;br&gt;formula" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="529.995" y="642" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-32" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="lTLusuyiNAkY52ba71Ii-25" target="lTLusuyiNAkY52ba71Ii-41" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480" y="797" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-42" value="нет" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=17;" parent="lTLusuyiNAkY52ba71Ii-32" vertex="1" connectable="0">
+          <mxGeometry x="-0.174" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-37" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="lTLusuyiNAkY52ba71Ii-25" target="lTLusuyiNAkY52ba71Ii-36" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-38" value="да" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=17;" parent="lTLusuyiNAkY52ba71Ii-37" vertex="1" connectable="0">
+          <mxGeometry x="-0.1429" y="-3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-25" value="формула синтаксически корректна?" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="350" y="752" width="184.98" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-49" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="lTLusuyiNAkY52ba71Ii-36" target="lTLusuyiNAkY52ba71Ii-48" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-50" value="нет" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=17;" parent="lTLusuyiNAkY52ba71Ii-49" vertex="1" connectable="0">
+          <mxGeometry x="0.0957" y="2" relative="1" as="geometry">
+            <mxPoint x="-2" y="6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-36" value="формула нест&lt;br&gt;циклические&lt;br&gt;зависимости&lt;br&gt;в таблицу?" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="350" y="932" width="184.98" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-60" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="lTLusuyiNAkY52ba71Ii-41" target="lTLusuyiNAkY52ba71Ii-57" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="690" y="817" />
+              <mxPoint x="690" y="797" />
+              <mxPoint x="810" y="797" />
+              <mxPoint x="810" y="1472" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-41" value="FormulaException" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="1" vertex="1">
+          <mxGeometry x="600" y="787" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-43" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="lTLusuyiNAkY52ba71Ii-36" target="lTLusuyiNAkY52ba71Ii-45" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="489.01" y="997" as="sourcePoint" />
+            <mxPoint x="441.01" y="997" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-44" value="да" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=17;" parent="lTLusuyiNAkY52ba71Ii-43" vertex="1" connectable="0">
+          <mxGeometry x="-0.174" y="1" relative="1" as="geometry">
+            <mxPoint x="3" y="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-59" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="lTLusuyiNAkY52ba71Ii-45" target="lTLusuyiNAkY52ba71Ii-57" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-45" value="CircularDependencyException" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="1" vertex="1">
+          <mxGeometry x="590" y="967" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-52" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="lTLusuyiNAkY52ba71Ii-48" target="lTLusuyiNAkY52ba71Ii-51" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-48" value="удалить из зависимых ячеек (parent_) указатель на this" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="382.49" y="1142" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-55" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="lTLusuyiNAkY52ba71Ii-51" target="lTLusuyiNAkY52ba71Ii-54" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-51" value="установить формулу в ячейку&lt;br&gt;formula_ = move(formula)" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="347.5" y="1227" width="189.98" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-56" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="lTLusuyiNAkY52ba71Ii-54" target="lTLusuyiNAkY52ba71Ii-19" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-54" value="добавить в&lt;br&gt;зависимые ячейки&lt;br&gt;(parent_) указатель на this" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="347.5" y="1312" width="189.98" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="lTLusuyiNAkY52ba71Ii-57" value="выход" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="130.01" y="1442" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="jDx9kgLdUKyveN3ygDV9-1" value="&lt;h1 style=&quot;font-size: 17px;&quot;&gt;Обработка исключений&lt;/h1&gt;&lt;p style=&quot;font-size: 17px;&quot;&gt;throw FormulaError(FormulaError::Category::Div0) происходит в методе&amp;nbsp;BinaryOpExpr::&lt;span style=&quot;background-color: initial; font-size: 17px;&quot;&gt;Evaluate&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); font-size: 17px;&quot;&gt;throw FormulaError(FormulaError::Category::Value) происходит в методе CellExpr::Evaluate, когда у какой-то ячейки было взято GetValue, вернулась строка, и она не кастуется в число. кмк только в этом методе может быть брошено это исключение, потому что применить операцию можно только к операндам, среди которых числа и ячейки. если в формуле операнд не число или не ячейка, то будет брошено FormulaException. значит не кастующийся в число текст может скрываться только в операнде ячейке, поэтому и в CellExpr::Evaluate должно бросаться это исключение, больше негде&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); font-size: 17px;&quot;&gt;throw FormulaError(FormulaError::Category::Ref) происходит в функторе, выдающем ячейки из листа. кмк только в нем может быть брошено это исключение, потому что если до него не было брошено InvalidPositionException и другие исключения, значит все ячейки устанавливались и вычислялись корректно. если же в какой-то ячейке формула, содержащая текстовое представление ячейки, которое переводится в выходящие за пределы листа координаты, то при вычислении этой формулы в CellExpr::Evaluate надо будет ячейку и сделать у нее GetValue(). ячейку как раз выдает функтор, по идее&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); font-size: 17px;&quot;&gt;без прекода конечно сложно понять, какое поле хранит CellExpr. все рассуждения выше основаны на том, что он хранит ячейку в виде строки или Position, а функтор получает это поле и выдает указатель на ячейку или же как раз FormulaError::Category::Ref&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;fontSize=17;" parent="1" vertex="1">
+          <mxGeometry x="30" y="1550" width="800" height="440" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

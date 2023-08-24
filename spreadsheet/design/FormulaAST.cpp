@@ -72,7 +72,7 @@ public:
     virtual ~Expr() = default;
     virtual void Print(std::ostream& out) const = 0;
     virtual void DoPrintFormula(std::ostream& out, ExprPrecedence precedence) const = 0;
-    virtual double Evaluate() const = 0;
+    virtual double Evaluate(std::function<const CellInterface*(std::string)> cell_getter) const = 0;
 
     // higher is tighter
     virtual ExprPrecedence GetPrecedence() const = 0;
@@ -144,9 +144,9 @@ public:
 
 // Реализуйте метод Evaluate() для бинарных операций.
 // При делении на 0 выбрасывайте ошибку вычисления FormulaError
-    double Evaluate() const override {
-        double lhs = lhs_->Evaluate();
-        double rhs = rhs_->Evaluate();
+    double Evaluate(std::function<const CellInterface*(std::string)> cell_getter) const override {
+        double lhs = lhs_->Evaluate(cell_getter);
+        double rhs = rhs_->Evaluate(cell_getter);
 
         switch (type_)
         {
@@ -161,7 +161,7 @@ public:
             break;
         case Type::Divide:
             if (std::abs(rhs - 0) <= 1e-6) {
-                throw FormulaError("DIV/0");
+                throw FormulaError(FormulaError::Category::Div0);
             }
 
             return lhs / rhs;
@@ -208,12 +208,12 @@ public:
     }
 
 // Реализуйте метод Evaluate() для унарных операций.
-    double Evaluate() const override {
+    double Evaluate(std::function<const CellInterface*(std::string)> cell_getter) const override {
         if (type_ == Type::UnaryMinus) {
-            return -operand_->Evaluate();
+            return -operand_->Evaluate(cell_getter);
         }
 
-        return operand_->Evaluate();
+        return operand_->Evaluate(cell_getter);
     }
 
 private:
@@ -239,13 +239,59 @@ public:
         return EP_ATOM;
     }
 
-// Для чисел метод возвращает значение числа.
-    double Evaluate() const override {
+    // Для чисел метод возвращает значение числа.
+    double Evaluate(std::function<const CellInterface*(std::string)> /* cell_getter */) const override {
         return value_;
     }
 
 private:
     double value_;
+};
+
+class CellExpr final : public Expr {
+public:
+    explicit CellExpr(std::string index)
+        : value_(index) {
+    }
+
+    void Print(std::ostream& out) const override {
+        out << value_;
+    }
+
+    void DoPrintFormula(std::ostream& out, ExprPrecedence /* precedence */) const override {
+        out << value_;
+    }
+
+    ExprPrecedence GetPrecedence() const override {
+        return EP_ATOM;
+    }
+
+    // Для ячеек метод возвращает вычисленное значение ячейки
+    double Evaluate(std::function<const CellInterface*(std::string)> cell_getter) const override {
+        // взять ячейку из таблицы
+        const CellInterface* cell = cell_getter(value_);
+
+        if (!cell) {
+            return VALUE_IF_EMPTY_CELL; // 0.0
+        }
+
+        const CellInterface::Value& value = cell->GetValue();
+        // в ней может быть CellInterface::Value = std::variant<std::string, double, FormulaError>
+        if (std::holds_alternative<double>(value)) {
+            return std::get<double>(value);
+        } else if (std::holds_alternative<std::string>(value)) {
+            // но строку нужно попробовать превратить в число
+            try {
+                return std::stod(std::get<std::string>(value));
+            } catch (const std::exception& ex) {
+                throw FormulaError(FormulaError::Category::Value);
+            }
+        }
+
+        throw std::get<FormulaError>(value);
+    }
+private:
+    std::string value_;
 };
 
 class ParseASTListener final : public FormulaBaseListener {
@@ -375,9 +421,14 @@ void FormulaAST::PrintFormula(std::ostream& out) const {
     root_expr_->PrintFormula(out, ASTImpl::EP_ATOM);
 }
 
-double FormulaAST::Execute() const {
-    return root_expr_->Evaluate();
+double FormulaAST::Execute(std::function<const CellInterface*(std::string)> cell_getter) const {
+    return root_expr_->Evaluate(cell_getter);
 }
+
+const std::forward_list<Position>& FormulaAST::GetReferencedCells() const {
+    return referenced_cells_;
+}
+
 
 FormulaAST::FormulaAST(std::unique_ptr<ASTImpl::Expr> root_expr)
     : root_expr_(std::move(root_expr)) {
