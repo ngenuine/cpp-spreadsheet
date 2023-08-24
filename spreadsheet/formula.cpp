@@ -23,7 +23,6 @@ public:
 
 private:
     FormulaAST ast_;
-
 };
 
 Formula::Formula(std::string expression)
