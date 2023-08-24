@@ -31,3 +31,5 @@ private:
     std::string text_;
     std::unique_ptr<FormulaInterface> formula_;
 };
+
+std::unique_ptr<CellInterface> CreateCell(const std::string& str);

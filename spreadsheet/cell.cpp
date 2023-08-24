@@ -62,3 +62,9 @@ std::string Cell::GetText() const {
 
     return FORMULA_SIGN + formula_->GetExpression();
 }
+
+std::unique_ptr<CellInterface> CreateCell(const std::string& str) {
+    std::unique_ptr<CellInterface> cell = std::make_unique<Cell>();
+    cell->Set(str);
+    return cell;
+}
